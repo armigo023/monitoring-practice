@@ -1,1 +1,1 @@
-# monitoring-practice
+# Monitoring Practice for Slurm DevOps Upgrade course

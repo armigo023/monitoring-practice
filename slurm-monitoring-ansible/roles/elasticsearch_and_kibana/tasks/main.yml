@@ -1,0 +1,4 @@
+---
+- include_tasks: install_elasticsearch.yml
+
+- include_tasks: install_kibana.yml

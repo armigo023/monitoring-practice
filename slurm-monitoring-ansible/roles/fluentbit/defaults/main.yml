@@ -1,0 +1,35 @@
+---
+# defaults file for ansible-role-fluentbit
+fluentbit_apt_repo: "deb https://packages.fluentbit.io/ubuntu/bionic bionic main"
+
+fluentbit_service_flush_seconds: 5
+fluentbit_service_daemon: false
+fluentbit_service_custom_parsers_file: []
+fluentbit_service_log_level: info
+fluentbit_service_enable_metrics: false
+fluentbit_service_metrics_listen_ip: 127.0.0.1
+fluentbit_service_metrics_listen_port: 2020
+fluentbit_package_name: td-agent-bit
+fluentbit_conf_dir: /etc/td-agent-bit
+
+# Default inputs
+fluentbit_inputs:
+  - {
+      "Name": "systemd",
+      "Tag": "host.*",
+      "Systemd_Filter": "_SYSTEMD_UNIT=prometheus.service",
+      "Systemd_Filter": "_SYSTEMD_UNIT=elasticsearch.service",
+      "Systemd_Filter": "_SYSTEMD_UNIT=kibana.service"
+    }
+
+# Default outputs
+fluentbit_outputs:
+  - {
+      "Name": "es",
+      "Match": "host.*",
+      "Host": "127.0.0.1",
+      "Port": "9200",
+      "Logstash_Format": "On",
+      "Logstash_Prefix": "node",
+      "Retry_Limit": "false"
+    }

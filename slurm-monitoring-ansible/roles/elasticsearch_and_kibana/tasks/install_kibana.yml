@@ -1,0 +1,37 @@
+---
+- name: Ensure dependencies are installed
+  apt:
+    name:
+      - apt-transport-https
+      - gnupg
+    state: present
+
+- name: Add Elasticsearch apt key
+  apt_key:
+    url: https://artifacts.elastic.co/GPG-KEY-elasticsearch
+    state: present
+
+- name: Add Kibana repository
+  apt_repository:
+    repo: "deb https://artifacts.elastic.co/packages/{{ kibana_version }}/apt stable main"
+    state: present
+    update_cache: true
+
+- name: Install Kibana
+  package:
+    name: "{{ kibana_package }}"
+
+- name: Copy Kibana configuration.
+  template:
+    src: kibana.yml.j2
+    dest: "{{ kibana_config_dir }}/kibana.yml"
+    owner: root
+    group: root
+    mode: 0644
+  notify: restart kibana
+
+- name: Ensure Kibana is started and enabled at boot.
+  service:
+    name: kibana
+    state: started
+    enabled: true

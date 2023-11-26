@@ -1,0 +1,13 @@
+---
+- name: Restart prometheus
+  listen: "restart prometheus"
+  ansible.builtin.systemd:
+    daemon_reload: true
+    name: prometheus
+    state: restarted
+
+- name: Reload prometheus
+  listen: "reload prometheus"
+  ansible.builtin.systemd:
+    name: prometheus
+    state: reloaded

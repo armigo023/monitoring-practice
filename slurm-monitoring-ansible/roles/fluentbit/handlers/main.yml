@@ -1,0 +1,8 @@
+---
+# handlers file for ansible-role-fluentbit
+
+- name: Restart Fluentbit service
+  service:
+    name: "{{ fluentbit_package_name }}"
+    enabled: true
+    state: restarted

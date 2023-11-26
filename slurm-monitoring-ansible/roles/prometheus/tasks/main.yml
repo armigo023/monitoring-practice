@@ -1,0 +1,16 @@
+---
+- name: Gather package facts
+  ansible.builtin.package_facts:
+  when: "not 'packages' in ansible_facts"
+
+- ansible.builtin.include_tasks: install.yml
+
+- ansible.builtin.include_tasks: configure.yml
+
+- name: Ensure prometheus service is started and enabled
+  become: true
+  ansible.builtin.systemd:
+    daemon_reload: true
+    name: prometheus
+    state: started
+    enabled: true

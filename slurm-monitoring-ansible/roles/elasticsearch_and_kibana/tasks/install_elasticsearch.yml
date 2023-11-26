@@ -1,0 +1,47 @@
+---
+- name: Add required dependencies.
+  apt:
+    name:
+      - apt-transport-https
+      - gnupg
+    state: present
+
+- name: Add Elasticsearch apt key.
+  apt_key:
+    url: https://artifacts.elastic.co/GPG-KEY-elasticsearch
+    state: present
+
+- name: Add Elasticsearch repository.
+  apt_repository:
+    repo: "deb https://artifacts.elastic.co/packages/{{ elasticsearch_version }}/apt stable main"
+    state: present
+    update_cache: true
+
+- name: Install Elasticsearch.
+  package:
+    name: "{{ elasticsearch_package }}"
+
+- name: Configure Elasticsearch 7+.
+  template:
+    src: "{{ item | basename }}.j2"
+    dest: "{{ item }}"
+    owner: root
+    group: elasticsearch
+    mode: 0660
+  with_items:
+    - "{{ elasticsearch_config_dir }}/elasticsearch.yml"
+    - "{{ elasticsearch_config_dir }}/jvm.options.d/heap.options"
+  notify: restart elasticsearch
+
+- name: Start Elasticsearch.
+  service:
+    name: elasticsearch
+    state: started
+    enabled: true
+
+- name: Make sure Elasticsearch is running before proceeding.
+  wait_for:
+    host: "{{ elasticsearch_network_host }}"
+    port: "{{ elasticsearch_http_port }}"
+    delay: 3
+    timeout: 100

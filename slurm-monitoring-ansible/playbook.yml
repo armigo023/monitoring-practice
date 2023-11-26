@@ -1,0 +1,11 @@
+---
+- name: "Deploy monitoring and logging stack"
+  hosts: ubuntu
+  gather_facts: true
+  become: true
+
+  roles:
+    - role: prometheus
+    - role: node_exporter
+    - role: elasticsearch_and_kibana
+    - role: fluentbit
